@@ -1,5 +1,10 @@
 import React , { useState } from 'react'
 
+import Spinner from '../../components/Spinner'
+
+import { useMutation } from '@apollo/client'
+import { SIGNUP } from '../../api/signup'
+
 import Navbar from '../../components/Navbar'
 
 import {
@@ -23,16 +28,40 @@ const Login = () => {
         confirmPassword: ''
     })
 
+    const [ signUp , { error , loading , data } ] = useMutation(SIGNUP)
+
     const handleChange = (input : any) => setState({ ...state, [input.target.name]: input.target.value })
+
+    if(data){
+        console.log(data)
+    }
+
+    const handleSubmit = () => {
+        if(state.password === state.confirmPassword){
+            signUp({
+                variables: {
+                    data: {
+                        fullName: state.fullName,
+                        username: state.username,
+                        email: state.email,
+                        password: state.password,
+                    }
+                }
+            })
+        }
+    }
 
     return(
         <>
             <Navbar />
+            {
+                loading && <Spinner />
+            }
             <LoginContainer>
                 <LoginForm>
                     <Title>Sign Up Form</Title>
                     <Label>Full Name</Label>
-                    <StyledInput value={state.fullName} name='fullname' onChange={handleChange} />
+                    <StyledInput value={state.fullName} name='fullName' onChange={handleChange} />
                     <Label>Username</Label>
                     <StyledInput value={state.username} name='username' onChange={handleChange} />
                     <Label>Email</Label>
@@ -42,7 +71,7 @@ const Login = () => {
                     <Label>Confirm Password</Label>
                     <StyledInput type='password' value={state.confirmPassword} name='confirmPassword' onChange={handleChange} />
                     <ButtonContainer>
-                        <StyledButton label='Sign Up' />
+                        <StyledButton label='Sign Up' onClick={handleSubmit} />
                     </ButtonContainer>
                     <ButtonContainer>
                         <StyledLink to='/login' >Sign In</StyledLink>

@@ -1,6 +1,11 @@
 import React , { useState } from 'react'
+import { useLazyQuery , gql } from '@apollo/client'
 
 import Navbar from '../../components/Navbar'
+import Spinner from '../../components/Spinner'
+
+import { LOGIN } from '../../api/login'
+import { AuthLogin } from '../../api/types'
 
 import {
     LoginContainer,
@@ -13,6 +18,10 @@ import {
     StyledLink
 } from './styles'
 
+function SubmitLogin(loginData : AuthLogin){
+    
+}
+
 const Login = () => {
 
     const [state,setState] = useState({
@@ -20,11 +29,27 @@ const Login = () => {
         password: ''
     })
 
+    const [login , { error , loading , data }] = useLazyQuery(LOGIN,{
+        variables: {
+            data: {
+                username: state.username,
+                password: state.password
+            }
+        }
+    })
+
     const handleChange = (input : any) => setState({ ...state, [input.target.name]: input.target.value })
+
+    if(data && data.login){
+        localStorage.setItem('access_token',data.login)
+    }
 
     return(
         <>
             <Navbar />
+            {
+                loading && <Spinner />
+            }
             <LoginContainer>
                 <LoginForm>
                     <Title>Login Form</Title>
@@ -33,7 +58,7 @@ const Login = () => {
                     <Label>Password</Label>
                     <StyledInput type='password' value={state.password} name='password' onChange={handleChange} />
                     <ButtonContainer>
-                        <StyledButton label='Sign In' />
+                        <StyledButton label='Sign In' onClick={() => login()} />
                     </ButtonContainer>
                     <ButtonContainer>
                         <StyledLink to='/signup' >Sign Up</StyledLink>
