@@ -1,0 +1,5 @@
+export default {
+    ADD_TO_CAR: 'ADD_TO_CAR',
+    REMOVE_FROM_CAR: 'REMOVE_FROM_CAR',
+    EMPTY_CAR: 'EMPTY_CAR'
+}

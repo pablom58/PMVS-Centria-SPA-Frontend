@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Card } from 'primereact/card'
+import { Link } from 'react-router-dom'
 
 export const Image = styled.img`
     width: 350px;
@@ -8,12 +9,13 @@ export const Image = styled.img`
 
 export const StyledCard = styled(Card)`
     max-width: 400px;
+    margin: 10px 0;
     & .p-card-content{
         height: 200px;
         overflow-y: scroll; 
         ::-webkit-scrollbar {
-            width: 8px;     /* Tamaño del scroll en vertical */
-            height: 8px;    /* Tamaño del scroll en horizontal */
+            width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-thumb {
             background:#fff;;
@@ -40,4 +42,8 @@ export const CardTitle = styled.p`
 export const CardDescription = styled.p`
     font-size: 15px;
     text-align: justify;
+`
+export const StyledLink = styled(Link)`
+    color: #fff;
+    text-decoration: none;
 `

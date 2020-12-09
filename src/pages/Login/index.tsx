@@ -1,5 +1,5 @@
 import React , { useState } from 'react'
-import { useLazyQuery , gql } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 
 import Navbar from '../../components/Navbar'
 import Spinner from '../../components/Spinner'
@@ -17,10 +17,6 @@ import {
     StyledButton,
     StyledLink
 } from './styles'
-
-function SubmitLogin(loginData : AuthLogin){
-    
-}
 
 const Login = () => {
 

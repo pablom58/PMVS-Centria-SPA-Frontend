@@ -1,31 +1,64 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import { Button } from 'primereact/button'
 
+import { addToCar } from '../../store/actions/CarActions'
+import { ProductInterface } from '../../store/interfaces'
+ 
 import {
     Image, 
     StyledCard,
     CardTitle,
-    CardDescription
+    CardDescription,
+    StyledLink
 } from './styles'
 
-const Card = () => {
+interface PropTypes {
+    _id : string,
+    name : string,
+    amount : number,
+    price : number,
+    description : string,
+    imageUrl: string,
+    addToCar: (product : ProductInterface) => void
+}
+
+const Card = (props:PropTypes) => {
+
+    const handleAddToCar = () => {
+        let data : ProductInterface = {
+            _id: props._id,
+            amount: 1,
+            name: props.name,
+            price: props.price
+        }
+
+        props.addToCar(data)
+    }
     
-    const header = <Image alt='Card' src='https://vignette.wikia.nocookie.net/losperros/images/4/42/Beagle1.jpg/revision/latest?cb=20190325150935&path-prefix=es' />
+    const header = <Image alt='Card' src={props.imageUrl} />
     const footer = <span>
-                        <Button label='Add to Card' icon='pi pi-add' style={{marginRight: '.25em'}} />
-                        <Button label='Details' icon='pi pi-add' style={{marginRight: '.25em'}} className='p-button-secondary' />
+                        <Button label='Add to Card' onClick={handleAddToCar} icon='pi pi-plus' style={{marginRight: '.25em'}} />
+                        <StyledLink to={`/productDetails/${props._id}`} >
+                            <Button label='Details' icon='pi pi-tablet' style={{marginRight: '.25em'}} className='p-button-secondary' />
+                        </StyledLink>
                     </span>
 
 
     return (
         <StyledCard header={header} footer={footer} >
-            <CardTitle>This is the title of the product</CardTitle>
+            <CardTitle>{props.name}</CardTitle>
+            <CardTitle>{`${props.price}$`}</CardTitle>
             <CardDescription>
-                This is the description
+                {props.description}
             </CardDescription>
         </StyledCard>
     )
 }
 
-export default Card
+const mapDispatch = {
+    addToCar
+}
+
+export default connect(null,mapDispatch)(Card)
