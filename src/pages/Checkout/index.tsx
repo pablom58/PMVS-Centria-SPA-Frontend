@@ -1,6 +1,7 @@
 import React , { useState } from 'react'
 
 import NavBar from '../../components/Navbar'
+import Carbar from '../../components/Carbar'
 
 import {
     CheckoutContainer,
@@ -20,6 +21,7 @@ const Checkout = () => {
     return (
         <>
             <NavBar />
+            <Carbar />
             <CheckoutContainer> 
                 <Title>Checkout Form</Title>
                 <RadioButtonContainer>

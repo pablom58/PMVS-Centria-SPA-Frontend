@@ -1,6 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import { Link } from 'react-router-dom'
+
+import { useQuery } from '@apollo/client'
+import { FIND_AUTHENTICATED_USER } from '../../api/user'
  
 import {
    Navbar as Nav,

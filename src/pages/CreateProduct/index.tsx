@@ -1,4 +1,5 @@
 import React , { useState , Fragment } from 'react'
+import { useHistory } from 'react-router-dom'
 
 import Navbar from '../../components/Navbar'
 
@@ -6,6 +7,8 @@ import { Button } from 'primereact/button'
 
 import { useMutation } from '@apollo/client'
 import { CREATE_PRODUCT } from '../../api/products'
+
+import Spinner from '../../components/Spinner'
 
 import {
     CreateProductContainer,
@@ -27,6 +30,12 @@ const CreateProduct = () => {
         description: '',
         imageUrl: ''
     })
+
+    const history = useHistory()
+
+    if(data && data.createProduct._id){
+        history.push('/')
+    }
 
     const inputs = [
         {
@@ -81,6 +90,9 @@ const CreateProduct = () => {
         <>
             <Navbar />
             <CreateProductContainer>
+                {
+                    loading && <Spinner />
+                }
                 <Title>Create Product</Title>
                 <FormContainer>
                     {

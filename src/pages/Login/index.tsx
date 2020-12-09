@@ -5,7 +5,6 @@ import Navbar from '../../components/Navbar'
 import Spinner from '../../components/Spinner'
 
 import { LOGIN } from '../../api/login'
-import { AuthLogin } from '../../api/types'
 
 import {
     LoginContainer,

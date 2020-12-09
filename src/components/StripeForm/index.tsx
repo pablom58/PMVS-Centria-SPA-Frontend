@@ -1,4 +1,14 @@
-import React from 'react'
+import React , { Fragment } from 'react'
+import { connect } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+
+import { useMutation } from '@apollo/client'
+
+import { MAKE_PAYMENT } from '../../api/payment'
+
+import Spinner from '../../components/Spinner'
+
+import { emptyCar } from '../../store/actions/CarActions'
 
 import {
     CardNumberElement,
@@ -16,9 +26,20 @@ import {
 } from './styles'
 import { StripeCardNumberElement } from '@stripe/stripe-js'
 
-const StripeForm = () => {
+import { ProductInterface } from '../../store/interfaces'
+
+const StripeForm = (props:any) => {
     const stripe = useStripe()
     const elements = useElements()
+
+    const [ makePayment , { error , loading , data } ] = useMutation(MAKE_PAYMENT)
+
+    const history = useHistory()
+
+    if(data && data.makeCharge){
+        props.emptyCar()
+        history.push('/')
+    }
 
     const handleSubmit = () => {
         if(elements && stripe){
@@ -30,7 +51,18 @@ const StripeForm = () => {
                         if(response.error){
                             console.error(response.error)
                         }else{
-                            console.log(`cardToken ${response.token!.id}`)
+
+                            const reducer = (accumulator : number, currentValue : number) => accumulator + currentValue;
+
+                            let total = props.products.map((product:ProductInterface) => product.amount * product.price).reduce(reducer)
+
+                            makePayment({
+                                variables: {
+                                    amount: total,
+                                    method: 'stripe',
+                                    cardToken: response.token!.id
+                                }
+                            })
                         }
                     })
                     .catch(error => console.error(error))
@@ -39,21 +71,34 @@ const StripeForm = () => {
     }
 
     return (
-        <StripeFormContainer>
-            <InputContainer>
-                <CardNumberElement />
-            </InputContainer>
-            <InputContainer>
-                <CardExpiryElement />
-            </InputContainer>
-            <InputContainer>
-                <CardCvcElement />
-            </InputContainer>
-            <ButtonContainer>
-                <StyledButton label='Pay Now' onClick={handleSubmit} />
-            </ButtonContainer>
-        </StripeFormContainer>
+        <Fragment>
+            {
+                loading && <Spinner />
+            }
+            <StripeFormContainer>   
+                <InputContainer>
+                    <CardNumberElement />
+                </InputContainer>
+                <InputContainer>
+                    <CardExpiryElement />
+                </InputContainer>
+                <InputContainer>
+                    <CardCvcElement />
+                </InputContainer>
+                <ButtonContainer>
+                    <StyledButton label='Pay Now' onClick={handleSubmit} />
+                </ButtonContainer>
+            </StripeFormContainer>
+        </Fragment>
     )
 }
 
-export default StripeForm
+const mapState = (state:any) => ({
+    products: state.Car.products
+})
+
+const mapDispatch = {
+    emptyCar
+}
+
+export default connect(mapState,mapDispatch)(StripeForm)
